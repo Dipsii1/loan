@@ -1,0 +1,66 @@
+"use client"
+
+import { useState } from "react"
+import Image from "next/image"
+import Modal from "@/components/ui/Modal"
+
+export default function Hero() {
+  const [showModal, setShowModal] = useState(false)
+
+  return (
+    <section className="relative pt-38 flex flex-col items-center justify-center text-center px-6 md:px-12 pb-16 md:pb-24">
+      {/* Heading */}
+      <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight text-gray-900">
+        Bantuan Keuangan <br />
+        Dengan Tujuan yang Tepat
+      </h1>
+
+      {/* Subheading */}
+      <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl">
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      </p>
+
+     {/* Buttons */}
+      <div className="mt-6 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex-1 sm:flex-none rounded-2xl bg-gradient-to-b from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold py-4 px-8 text-lg shadow-[0_4px_0_0_theme(colors.blue.600),0_8px_20px_theme(colors.blue.500/0.25)] hover:shadow-[0_6px_0_0_theme(colors.blue.700),0_10px_25px_theme(colors.blue.500/0.3)] active:shadow-[0_2px_0_0_theme(colors.blue.600),0_4px_10px_theme(colors.blue.500/0.2)] active:translate-y-0.5 transform active:scale-95 transition-all duration-150"
+        >
+          Ajukan Peminjaman
+        </button>
+        
+        <button className="flex-1 sm:flex-none bg-white rounded-2xl py-4 px-8 text-lg font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform active:scale-95 transition-all duration-150">
+          <span className="mr-1 space-x-3 hidden sm:inline-flex justify-center items-center">📖</span>
+          Panduan
+        </button>
+      </div>
+
+      {/* Modal */}
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} />
+
+      {/* Feature cards */}
+      <div className="mt-12 max-w-5xl w-full">
+        <div className="bg-white rounded-2xl shadow-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
+          {[
+            { icon: "coin", title: "Up to 95%", desc: "Tingkat keberhasilan pinjaman" },
+            { icon: "chart", title: "Up to Rp1M", desc: "Limit pinjaman maksimum" },
+            { icon: "dollar", title: "24 Jam", desc: "Proses pencairan cepat" },
+            { icon: "loading", title: "Tanpa Batas", desc: "Fleksibilitas peminjaman" },
+          ].map((item, i) => (
+            <div key={i} className="p-8 flex flex-col items-center text-center">
+              <Image
+                src={`/images/${item.icon}.svg`}
+                alt={`${item.title} Icon`}
+                width={48}
+                height={48}
+                className="w-12 h-12 mb-4"
+              />
+              <h3 className="font-bold text-[#0081FF]">{item.title}</h3>
+              <p className="text-sm text-gray-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
