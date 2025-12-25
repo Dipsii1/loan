@@ -3,24 +3,37 @@
 import { useState } from "react"
 import Image from "next/image"
 import Modal from "@/components/ui/Modal"
+import { motion } from "motion/react";
 
 export default function Hero() {
   const [showModal, setShowModal] = useState(false)
 
   return (
     <section className="relative pt-38 flex flex-col items-center justify-center text-center px-6 md:px-12 pb-16 md:pb-24">
-      {/* Heading */}
-      <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight text-gray-900">
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Heading */}
+      <h1 className="text-balance text-3xl font-medium sm:text-4xl md:text-6xl font-extrabold leading-tight">
         Bantuan Keuangan <br />
         Dengan Tujuan yang Tepat
       </h1>
 
       {/* Subheading */}
-      <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl">
+      <p className="text-black mt-4 text-base sm:text-l max-w-2xl">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry.
       </p>
-
-     {/* Buttons */}
+      </motion.div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        {/* Buttons */}
       <div className="mt-6 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
         <button
           onClick={() => setShowModal(true)}
@@ -30,15 +43,30 @@ export default function Hero() {
         </button>
         
         <button className="flex-1 sm:flex-none bg-white rounded-2xl py-4 px-8 text-lg font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform active:scale-95 transition-all duration-150">
-          <span className="mr-1 space-x-3 hidden sm:inline-flex justify-center items-center">📖</span>
-          Panduan
+        <div className="mr-1 space-x-1 hidden sm:inline-flex justify-center items-center">
+                        <span className="w-5 h-5 text-xs rounded-sm border">
+                          ⌘
+                        </span>
+                        <span className="w-5 h-5 text-xs rounded-sm border">
+                          /
+                        </span>
+                      </div>
+          Login ke Akun
         </button>
       </div>
+      </motion.div>
+
+     
 
       {/* Modal */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} />
 
-      {/* Feature cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
+        {/* Feature cards */}
       <div className="mt-12 max-w-5xl w-full">
         <div className="bg-white rounded-2xl shadow-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
           {[
@@ -49,7 +77,7 @@ export default function Hero() {
           ].map((item, i) => (
             <div key={i} className="p-8 flex flex-col items-center text-center">
               <Image
-                src={`/images/${item.icon}.svg`}
+                src={`/${item.icon}.svg`}
                 alt={`${item.title} Icon`}
                 width={48}
                 height={48}
@@ -61,6 +89,8 @@ export default function Hero() {
           ))}
         </div>
       </div>
+      </motion.div>
+      
     </section>
   )
 }
