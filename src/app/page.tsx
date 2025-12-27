@@ -4,6 +4,7 @@ import ProductSection from "@/components/ProductSection";
 import Footer from "@/components/Footer";
 import LogoLoop from "@/components/LogoLoop";
 import CallToAction from "@/components/CallAction";
+import GradientBackground from "@/components/Background";
 
 // import icons dari react-icons
 // import {
@@ -36,9 +37,10 @@ const techLogos = [
 export default function Home() {
   return (
     <>
+    <GradientBackground/>
     <Navbar />
     <Hero />
-    <div className="relative h-[200px] overflow-hidden">
+    <div className="relative h-[200px] top-20 overflow-hidden">
           <LogoLoop
             logos={techLogos}
             speed={120}
@@ -46,8 +48,7 @@ export default function Home() {
             logoHeight={48}
             width="100%"
             gap={40}
-            pauseOnHover
-            scaleOnHover
+            pauseOnHover={false}
             fadeOut
             fadeOutColor="#ffffff"
             ariaLabel="Technology partners"
