@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { ArrowRight, ChevronDown, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 interface FormErrors {
   name?: string;
@@ -29,13 +30,13 @@ export default function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     // For phone number, only allow digits
     let processedValue = value;
     if (name === "no_phone") {
       processedValue = value.replace(/\D/g, "");
     }
-    
+
     setFormData({
       ...formData,
       [name]: processedValue
@@ -48,7 +49,7 @@ export default function RegisterPage() {
       });
     }
   };
-  
+
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter
     if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'].includes(e.key)) {
@@ -86,7 +87,7 @@ export default function RegisterPage() {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors = validateForm();
@@ -95,9 +96,43 @@ export default function RegisterPage() {
       return;
     }
 
-    // Jika semua valid, redirect ke /home
-    router.push("/home");
+    try {
+      // 1️⃣ Register user di Supabase Auth
+      const { data: supaData, error: supaError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (supaError) throw new Error(supaError.message);
+      if (!supaData.user) throw new Error("Gagal membuat akun Supabase");
+
+      const supabaseUserId = supaData.user.id;
+
+      
+      const res = await fetch("http://localhost:4000/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: supabaseUserId,
+          name: formData.name,
+          email: formData.email,
+          no_phone: formData.no_phone,
+          role_id: formData.userType === "agent" ? 2 : 3, // 2=Agent, 3=Nasabah
+        }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Gagal menyimpan profile");
+
+      // 3️⃣ Jika berhasil semua, redirect ke login
+      alert("Registrasi berhasil! Silakan login.");
+      router.push("/login");
+
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    }
   };
+
 
   return (
     <div>
@@ -105,8 +140,8 @@ export default function RegisterPage() {
       <main className="overflow-hidden">
         <section>
           <div className="min-h-screen flex items-center justify-center bg-white px-4">
-          <div className="w-full max-w-md px-4 sm:px-0 mx-auto">
-          <h1 className="text-center text-2xl pt-20 sm:text-3xl font-bold mb-6 sm:mb-8">
+            <div className="w-full max-w-md px-4 sm:px-0 mx-auto">
+              <h1 className="text-center text-2xl pt-20 sm:text-3xl font-bold mb-6 sm:mb-8">
                 Register
               </h1>
 
@@ -180,47 +215,47 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Choose Agent / Nasabah */}
-<div className="space-y-2">
-  <label className="block text-sm font-medium text-gray-700">
-    Tipe Pengguna (pilih salah satu!)
-  </label>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Tipe Pengguna (pilih salah satu!)
+                  </label>
 
-  <div className="grid grid-cols-2 gap-4">
-    {[
-      { label: 'Agent', value: 'agent' },
-      { label: 'Nasabah', value: 'nasabah' }
-    ].map(option => {
-      const selected = formData.userType === option.value
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { label: 'Agent', value: 'agent' },
+                      { label: 'Nasabah', value: 'nasabah' }
+                    ].map(option => {
+                      const selected = formData.userType === option.value
 
-      return (
-        <button
-          key={option.value}
-          type="button"
-          onClick={() =>
-            setFormData(prev => ({
-              ...prev,
-              userType: option.value
-            }))
-          }
-          className={`
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() =>
+                            setFormData(prev => ({
+                              ...prev,
+                              userType: option.value
+                            }))
+                          }
+                          className={`
             rounded-2xl border-2 px-4 py-4 font-semibold transition-all
             ${selected
-              ? 'border-blue-500 ring-2 ring-blue-500 bg-blue-50'
-              : 'border-gray-300 hover:border-blue-300'}
+                              ? 'border-blue-500 ring-2 ring-blue-500 bg-blue-50'
+                              : 'border-gray-300 hover:border-blue-300'}
           `}
-        >
-          {option.label}
-        </button>
-      )
-    })}
-  </div>
+                        >
+                          {option.label}
+                        </button>
+                      )
+                    })}
+                  </div>
 
-  {errors.userType && (
-    <p className="text-red-500 text-sm ml-1">
-      {errors.userType}
-    </p>
-  )}
-</div>
+                  {errors.userType && (
+                    <p className="text-red-500 text-sm ml-1">
+                      {errors.userType}
+                    </p>
+                  )}
+                </div>
 
 
                 {/* Button */}

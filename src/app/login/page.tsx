@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 interface FormErrors {
   email?: string;
@@ -47,18 +48,43 @@ export default function LoginPage() {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrors({});
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+    // Validasi
+    const newErrors: FormErrors = {};
+    if (!formData.email.trim()) newErrors.email = "Email harus diisi";
+    if (!formData.password) newErrors.password = "Password harus diisi";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    // Jika semua valid, redirect ke /home
-    router.push("/home");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        setErrors({ email: "Email atau password salah" });
+        return;
+      }
+
+      if (!data.user) {
+        setErrors({ email: "Login gagal" });
+        return;
+      }
+
+      router.push("/home");
+
+    } catch (err: any) {
+      setErrors({ email: "Terjadi kesalahan" });
+    }
   };
+
 
   return (
     <div>
@@ -66,8 +92,8 @@ export default function LoginPage() {
       <main className="overflow-hidden">
         <section>
           <div className="min-h-screen flex items-center justify-center bg-white px-4">
-          <div className="w-full max-w-md px-4 sm:px-0 mx-auto">
-          <h1 className="text-center text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+            <div className="w-full max-w-md px-4 sm:px-0 mx-auto">
+              <h1 className="text-center text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
                 Login
               </h1>
 
