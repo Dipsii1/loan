@@ -14,8 +14,9 @@ interface FormErrors {
     alamat?: string;
     tempat_lahir?: string;
     tanggal_lahir?: string;
+    plafond?: string;
     userChoice?: string;
-     userJaminan?: string;
+    userJaminan?: string;
   }
 
 
@@ -78,6 +79,7 @@ export default function CreditForm() {
         alamat: '',
         tempat_lahir: '',
         tanggal_lahir: '',
+        plafond: '',
         userChoice: '',
         userJaminan: ''
       })
@@ -99,7 +101,7 @@ export default function CreditForm() {
         
         // For phone number, only allow digits
         let processedValue = value;
-        if (name === "nik") {
+        if (name === "nik" || name === "plafond") {
           processedValue = value.replace(/\D/g, "");
         }
         
@@ -207,14 +209,14 @@ export default function CreditForm() {
             
           <div className="min-h-screen flex items-center justify-center bg-white px-4">
             {step === 'form' && (
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-md px-4 sm:px-0 mx-auto">
              
-              <h1 className="text-center text-3xl font-bold mb-8">
+              <h1 className="text-center text-2xl pt-20 sm:text-3xl font-bold mb-6 sm:mb-8">
                 Form Kredit
               </h1>
 
              
-              <form className="space-y-5">
+              <form className="space-y-4 sm:space-y-5">
                 {/* NIK */}
                 <div>
                   <input
@@ -224,7 +226,7 @@ export default function CreditForm() {
                     value={formData.nik}
                     onChange={handleChange}
                     inputMode="numeric"
-                    className={`w-full px-4 py-3 rounded-2xl border ${errors.nik ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.nik ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                   {errors.nik && <p className="text-red-500 text-sm mt-1 ml-1">{errors.nik}</p>}
                 </div>
@@ -237,7 +239,7 @@ export default function CreditForm() {
                     placeholder="Nama"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-2xl border ${errors.name ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.name ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                   {errors.name && <p className="text-red-500 text-sm mt-1 ml-1">{errors.name}</p>}
                 </div>
@@ -250,7 +252,7 @@ export default function CreditForm() {
                     placeholder="Alamat lengkap"
                     value={formData.alamat}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-2xl border ${errors.alamat ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.alamat ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                   {errors.alamat && <p className="text-red-500 text-sm mt-1 ml-1">{errors.alamat}</p>}
                 </div>
@@ -263,7 +265,7 @@ export default function CreditForm() {
                     placeholder="Tempat lahir"
                     value={formData.tempat_lahir}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-2xl border ${errors.tempat_lahir ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.tempat_lahir ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                   {errors.tempat_lahir && <p className="text-red-500 text-sm mt-1 ml-1">{errors.tempat_lahir}</p>}
                 </div>
@@ -276,9 +278,23 @@ export default function CreditForm() {
                     placeholder="Tanggal lahir"
                     value={formData.tanggal_lahir}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-2xl border ${errors.tanggal_lahir ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.tanggal_lahir ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                   {errors.tanggal_lahir && <p className="text-red-500 text-sm mt-1 ml-1">{errors.tanggal_lahir}</p>}
+                </div>
+
+                {/* plafond (nominal pengajuan) */}
+                <div>
+                  <input
+                    type="tel"
+                    name="plafond"
+                    placeholder="Plafond (nominal pengajuan)"
+                    value={formData.plafond}
+                    onChange={handleChange}
+                    inputMode="numeric"
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.plafond ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  />
+                  {errors.plafond && <p className="text-red-500 text-sm mt-1 ml-1">{errors.plafond}</p>}
                 </div>
 
                 {/* Dropdown Kredit Produktif, Kredit Multiguna, KPR, Dana Pensiun */}
@@ -308,7 +324,7 @@ export default function CreditForm() {
                   type="button"
                   onClick={handleFormContinue}
                   variant="default"
-                  className="group hover:cursor-pointer w-full text-lg py-6 rounded-2xl bg-gradient-to-b from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold shadow-[0_4px_0_0_theme(colors.blue.600),0_8px_20px_theme(colors.blue.500/0.25)] hover:shadow-[0_6px_0_0_theme(colors.blue.700),0_10px_25px_theme(colors.blue.500/0.3)] active:shadow-[0_2px_0_0_theme(colors.blue.600),0_4px_10px_theme(colors.blue.500/0.2)] active:translate-y-0.5 transform transition-all duration-150"
+                  className="group hover:cursor-pointer w-full text-base sm:text-lg py-4 sm:py-6 rounded-2xl bg-gradient-to-b from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold shadow-[0_4px_0_0_theme(colors.blue.600),0_8px_20px_theme(colors.blue.500/0.25)] hover:shadow-[0_6px_0_0_theme(colors.blue.700),0_10px_25px_theme(colors.blue.500/0.3)] active:shadow-[0_2px_0_0_theme(colors.blue.600),0_4px_10px_theme(colors.blue.500/0.2)] active:translate-y-0.5 transform transition-all duration-150"
                 >
                   Pilih Kredit
                   <div className=" text-white   size-6 overflow-hidden rounded-full duration-500">
@@ -327,7 +343,7 @@ export default function CreditForm() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="text-lg w-full py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
+                    className="w-full text-base mb-8 sm:text-lg py-4 sm:py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
                   >
                     Back
                   </Button>
@@ -338,12 +354,14 @@ export default function CreditForm() {
 
         
             {step === 'credit' && (
-  <div className="space-y-10">
+  <section className="mt-24 space-y-3 sm:space-y-5">
     {/* CARD PILIHAN KREDIT */}
-    <h1 className="text-center text-3xl font-bold mb-20">
+    <div className=" px-4 sm:px-0 mb-16">
+      <h1 className="text-center text-2xl sm:text-3xl font-bold">
         Pilihan Kredit
-    </h1>
-    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 px-6">
+      </h1>
+    </div>
+    <div className="mb-8 max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 px-4 sm:px-6">
       {creditOptions.map((service, index) => {
         const selected = formData.userChoice === service.value
 
@@ -358,11 +376,11 @@ export default function CreditForm() {
               }))
             }
             className={`
-              bg-white rounded-2xl p-10 text-center transition-all border-2
-              ${selected
-                ? 'border-blue-500 shadow-xl ring-2 ring-blue-500'
-                : 'border-transparent shadow-md hover:shadow-xl hover:border-blue-300'}
-            `}
+                bg-white rounded-2xl p-6 sm:p-10 text-center transition-all border-2
+                ${selected
+                  ? 'border-blue-500 shadow-xl ring-2 ring-blue-500'
+                  : 'border-transparent shadow-md hover:shadow-xl hover:border-blue-300'}
+              `}
           >
             <div className="flex justify-center">{service.icon}</div>
             <h3 className="text-xl font-bold mt-4">{service.label}</h3>
@@ -378,7 +396,7 @@ export default function CreditForm() {
   disabled={!formData.userChoice}
   onClick={handleCreditContinue}
   className={`
-    group hover:cursor-pointer w-full text-lg py-6 rounded-2xl
+    group hover:cursor-pointer w-full text-base sm:text-lg py-4 sm:py-6 rounded-2xl
     bg-gradient-to-b from-blue-400 to-blue-500
     hover:from-blue-500 hover:to-blue-600
     text-white font-bold
@@ -405,20 +423,23 @@ export default function CreditForm() {
                     type="button"
                     onClick={handleBack}
                     variant="outline"
-                    className="text-lg w-full py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
+                    className="w-full text-base mb-8 sm:text-lg py-4 sm:py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
                   >
                     Back
                   </Button>
-  </div>
+  </section>
 )}
 
+{/* JAMINAN */}
 {step === 'jaminan' && (
-  <div className="space-y-10">
+  <section className="mt-24 space-y-3 sm:space-y-5">
     {/* CARD PILIHAN KREDIT */}
-    <h1 className="text-center text-3xl font-bold mb-20">
-        Pilihan Jaminan
+    <div className=" px-4 sm:px-0 mb-16">
+    <h1 className="text-center text-2xl sm:text-3xl font-bold">
+      Pilihan Jaminan
     </h1>
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 px-6">
+  </div>
+  <div className="mb-8 max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-10 px-4 sm:px-6">
       {jaminanOptions.map((jaminan, index) => {
         const selected = formData.userJaminan === jaminan.value
 
@@ -433,11 +454,11 @@ export default function CreditForm() {
               }))
             }
             className={`
-              bg-white rounded-2xl p-10 text-center transition-all border-2
-              ${selected
-                ? 'border-blue-500 shadow-xl ring-2 ring-blue-500'
-                : 'border-transparent shadow-md hover:shadow-xl hover:border-blue-300'}
-            `}
+                bg-white rounded-2xl p-6 sm:p-10 text-center transition-all border-2
+                ${selected
+                  ? 'border-blue-500 shadow-xl ring-2 ring-blue-500'
+                  : 'border-transparent shadow-md hover:shadow-xl hover:border-blue-300'}
+              `}
           >
             <div className="flex justify-center">{jaminan.icon}</div>
             <h3 className="text-xl font-bold mt-4">{jaminan.title}</h3>
@@ -453,7 +474,7 @@ export default function CreditForm() {
   disabled={!formData.userJaminan}
   onClick={handleSubmit}
   className={`
-    group hover:cursor-pointer w-full text-lg py-6 rounded-2xl
+    group hover:cursor-pointer w-full text-base sm:text-lg py-4 sm:py-6 rounded-2xl
     bg-gradient-to-b from-blue-400 to-blue-500
     hover:from-blue-500 hover:to-blue-600
     text-white font-bold
@@ -480,11 +501,11 @@ export default function CreditForm() {
                     type="button"
                     onClick={handleBack}
                     variant="outline"
-                    className="text-lg w-full py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
+                    className="w-full text-base mb-8 sm:text-lg py-4 sm:py-6 rounded-2xl font-bold shadow-[0_4px_0_0_theme(colors.gray.300),0_8px_20px_theme(colors.gray.300/0.25)] hover:shadow-[0_6px_0_0_theme(colors.gray.400),0_10px_25px_theme(colors.gray.300/0.3)] hover:bg-gray-50 active:shadow-[0_2px_0_0_theme(colors.gray.300),0_4px_10px_theme(colors.gray.300/0.2)] active:translate-y-0.5 transform transition-all duration-150 dark:shadow-[0_4px_0_0_theme(colors.gray.600),0_8px_20px_theme(colors.gray.700/0.25)] dark:hover:shadow-[0_6px_0_0_theme(colors.gray.500),0_10px_25px_theme(colors.gray.700/0.3)] dark:hover:bg-gray-800 cursor-pointer"
                   >
                     Back
                   </Button>
-  </div>
+  </section>
 )}
 
         </div>
