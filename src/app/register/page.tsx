@@ -88,50 +88,55 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  const validationErrors = validateForm();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    try {
-      //  Register user di Supabase Auth
-      const { data: supaData, error: supaError } = await supabase.auth.signUp({
+  // Admin TIDAK dibuat lewat register
+  const role = formData.userType === "agent" ? "Agent" : "Nasabah";
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: { role },
+      },
+    });
+
+    if (error) throw error;
+    if (!data.user) throw new Error("User supabase tidak terbentuk");
+
+    const res = await fetch("http://localhost:4000/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: data.user.id,
+        name: formData.name,
         email: formData.email,
-        password: formData.password,
-      });
+        no_phone: formData.no_phone,
+        role_id: formData.userType === "agent" ? 2 : 3,
+      }),
+    });
 
-      if (supaError) throw new Error(supaError.message);
-      if (!supaData.user) throw new Error("Gagal membuat akun Supabase");
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message);
 
-      const supabaseUserId = supaData.user.id;
+    router.push("/login");
 
-      
-      const res = await fetch("http://localhost:4000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: supabaseUserId,
-          name: formData.name,
-          email: formData.email,
-          no_phone: formData.no_phone,
-          role_id: formData.userType === "agent" ? 2 : 3, // 2=Agent, 3=Nasabah
-        }),
-      });
+  } catch (err: any) {
+    setErrors({
+      email: err.message || "Registrasi gagal",
+    });
+  }
+};
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Gagal menyimpan profile");
 
-      // Jika berhasil semua, redirect ke login
-      alert("Registrasi berhasil! Silakan login.");
-      router.push("/login");
 
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
-  };
 
 
   return (
