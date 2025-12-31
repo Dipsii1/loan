@@ -20,6 +20,8 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { User } from "lucide-react";
+
 
 interface ApplicationStatus {
   id: number;
@@ -395,40 +397,59 @@ export default function AdminDashboard() {
         />
       )}
       
-      <nav className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">L</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-                onClick={() => router.push("/home")}
-              >
-                <Home className="h-4 w-4" />
-                <span className="hidden sm:inline">Home</span>
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={handleLogout}
-                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Log out</span>
-              </Button>
-            </div>
-          </div>
+     <nav className="bg-white border-b border-gray-200 shadow-sm">
+  <div className="px-6 py-4">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-3">
+        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold">L</span>
         </div>
-      </nav>
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Loan</h1>
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-4">
+  <Button
+    variant="ghost"
+    className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+    onClick={() => router.push("/admin/dashboard")}
+  >
+    <FileText className="h-5 w-5" />
+    <span className="hidden sm:inline">Dashboard</span>
+  </Button>
+
+  <Button
+    variant="ghost"
+    className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+    onClick={() => router.push("/admin/alluser")}
+  >
+    <User className="h-5 w-5" />
+    <span className="hidden sm:inline">Users</span>
+  </Button>
+
+
+        <Button
+          variant="ghost"
+          className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+          onClick={() => router.push("/home")}
+        >
+          <Home className="h-4 w-4" />
+          <span className="hidden sm:inline">Home</span>
+        </Button>
+
+        <Button
+          variant="outline"
+          onClick={handleLogout}
+          className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          <span className="hidden sm:inline">Log out</span>
+        </Button>
+      </div>
+    </div>
+  </div>
+</nav>
 
       <div className="p-15">
         <div className="max-w-7xl mx-auto">
