@@ -1,8 +1,8 @@
 'use client'
-// ...existing code...
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import supabase from '../lib/db'
+import {supabase} from '@/app/lib/supabase'
 
 export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const router = useRouter()
