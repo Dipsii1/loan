@@ -223,13 +223,12 @@ export default function AdminDashboard() {
     }
   };
 
-  // PERBAIKAN DI SINI: Menggunakan properti yang benar
+
   const filteredApplications = applications.filter(app => {
-    // Pastikan app ada dan properti tidak undefined
     if (!app) return false;
 
-    const name = app.nama_lengkap || ""; // Gunakan string kosong jika undefined
-    const kode = app.kode_pengajuan || ""; // Gunakan string kosong jika undefined
+    const name = app.nama_lengkap || ""; 
+    const kode = app.kode_pengajuan || ""; 
 
     const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          kode.toLowerCase().includes(searchTerm.toLowerCase());
@@ -267,11 +266,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Admin Navbar */}
       <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo & Brand */}
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">L</span>
@@ -281,7 +278,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Navigation & Actions */}
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
@@ -305,7 +301,6 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="p-15">
         <div className="max-w-7xl mx-auto">
           {/* Welcome Section */}
@@ -315,7 +310,6 @@ export default function AdminDashboard() {
             </h2>
           </div>
 
-          {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
               <div className="flex items-center justify-between">
@@ -381,7 +375,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Filter and Search Section */}
           <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
@@ -424,7 +417,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Applications Table */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -543,7 +535,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Detail Modal */}
       {showDetailModal && selectedApplication && (
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white shadow-2xl border-2 border-grey-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
