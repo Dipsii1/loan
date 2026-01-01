@@ -11,12 +11,12 @@ export default function CallToAction() {
     <section className="w-full py-16 md:py-24 bg-white flex flex-col items-center justify-center text-center px-6">
       {/* Judul */}
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4 md:mb-6">
-        Siap mengambil langkah baru?
+        Ayo ambil langkah cerdas!
       </h2>
 
       {/* Deskripsi */}
       <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-xl md:max-w-2xl mb-8 md:mb-10">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+        Karena setiap tujuan finansial memiliki cerita. Kami hadir untuk membantu Anda mewujudkannya secara bijak dan terencana.
       </p>
 
       {/* Tombol */}

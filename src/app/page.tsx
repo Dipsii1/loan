@@ -16,31 +16,48 @@ import GradientBackground from "@/components/Background";
 
 // daftar logo teknologi
 const techLogos = [
+
   {
-    node: <img src="/Mandiri.png" alt="Mandiri Bank" className="h-12" />,
-    title: "Mandiri Bank",
-  },
-  {
-    node: <img src="/Mofi.png" alt="MOFI" className="h-12" />,
+    node: <img src="/Mofi.png" alt="MOFI" className="h-18" />,
     title: "MOFI",
   },
    {
-    node: <img src="/Bfi.png" alt="BFI Finance" className="h-12" />,
-    title: "BFI Finance",
+    node: <img src="/CIMB-Niaga.svg" alt="CIMB Niaga" className="h-10" />,
+    title: "CIMB Niaga",
   },
    {
-    node: <img src="/Bca.png" alt="Bca" className="h-12" />,
-    title: "CIMB Niaga",
+    node: <img src="/kb-bank.png" alt="KB Bank" className="h-10" />,
+    title: "KB Bank",
+  },
+  {
+    node: <img src="/bss-sampoerna.png" alt="BSS Sampoerna" className="h-14" />,
+    title: "BSS Sampoerna",
+  },
+  {
+    node: <img src="/bpr.png" alt="BPR" className="h-18" />,
+    title: "BPR",
+  },
+  {
+    node: <img src="/bank-dki.png" alt="Bank DKI" className="h-9" />,
+    title: "Bank DKI",
+  },
+  {
+    node: <img src="/mandiri-taspen.png" alt="Mandiri Taspen" className="h-18" />,
+    title: "Mandiri Taspen",
+  },
+  {
+    node: <img src="/kredit-plus.webp" alt="Kredit Plus" className="h-12" />,
+    title: "Kredit Plus",
   },
 ];
 
 export default function LandingPage() {
   return (
     <>
-    <GradientBackground/>
+    {/* <GradientBackground/> */}
     <Navbar />
     <Hero />
-    <div className="relative h-[200px] top-20 overflow-hidden">
+    <div className="relative h-[200px] overflow-hidden">
           <LogoLoop
             logos={techLogos}
             speed={120}

@@ -24,21 +24,38 @@ import { useEffect, useState } from "react"
 
 // daftar logo teknologi
 const techLogos = [
+
   {
-    node: <img src="/Mandiri.png" alt="Mandiri Bank" className="h-12" />,
-    title: "Mandiri Bank",
-  },
-  {
-    node: <img src="/Mofi.png" alt="MOFI" className="h-12" />,
+    node: <img src="/Mofi.png" alt="MOFI" className="h-18" />,
     title: "MOFI",
   },
    {
-    node: <img src="/Bfi.png" alt="BFI Finance" className="h-12" />,
-    title: "BFI Finance",
+    node: <img src="/CIMB-Niaga.svg" alt="CIMB Niaga" className="h-10" />,
+    title: "CIMB Niaga",
   },
    {
-    node: <img src="/Bca.png" alt="Bca" className="h-12" />,
-    title: "CIMB Niaga",
+    node: <img src="/kb-bank.png" alt="KB Bank" className="h-10" />,
+    title: "KB Bank",
+  },
+  {
+    node: <img src="/bss-sampoerna.png" alt="BSS Sampoerna" className="h-14" />,
+    title: "BSS Sampoerna",
+  },
+  {
+    node: <img src="/bpr.png" alt="BPR" className="h-18" />,
+    title: "BPR",
+  },
+  {
+    node: <img src="/bank-dki.png" alt="Bank DKI" className="h-9" />,
+    title: "Bank DKI",
+  },
+  {
+    node: <img src="/mandiri-taspen.png" alt="Mandiri Taspen" className="h-18" />,
+    title: "Mandiri Taspen",
+  },
+  {
+    node: <img src="/kredit-plus.webp" alt="Kredit Plus" className="h-12" />,
+    title: "Kredit Plus",
   },
 ];
 
@@ -147,7 +164,7 @@ export default function Home() {
 
           {/* Subheading */}
           <p className="text-black mt-4 text-base sm:text-l max-w-2xl">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Ayo {userName || "User"}, ambil langkah cerdas untuk tujuan Anda!
           </p>
         </motion.div>
         
@@ -195,10 +212,10 @@ export default function Home() {
           <div className="mt-12 max-w-5xl w-full">
             <div className="bg-white rounded-2xl shadow-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
               {[
-                { icon: "coin", title: "Up to 95%", desc: "Tingkat keberhasilan pinjaman" },
-                { icon: "chart", title: "Up to Rp1M", desc: "Limit pinjaman maksimum" },
-                { icon: "dollar", title: "24 Jam", desc: "Proses pencairan cepat" },
-                { icon: "loading", title: "Tanpa Batas", desc: "Fleksibilitas peminjaman" },
+                { icon: "coin", title: "Up to 80 Mio", desc: "Jumlah Insetif yang Dibayarkan" },
+            { icon: "chart", title: "4 +", desc: "Jumlah Customer yang Terbantu" },
+            { icon: "dollar", title: "Up to 5 Bio", desc: "Jumlah Pinjaman yang Tersalurkan" },
+            { icon: "loading", title: "8 +", desc: "Mitra Lembaga Partner" },
               ].map((item, i) => (
                 <div key={i} className="p-8 flex flex-col items-center text-center">
                   <Image
@@ -208,7 +225,7 @@ export default function Home() {
                     height={48}
                     className="w-12 h-12 mb-4"
                   />
-                  <h3 className="font-bold text-[#0081FF]">{item.title}</h3>
+                  <h2 className="font-bold text-[#0081FF]">{item.title}</h2>
                   <p className="text-sm text-gray-600">{item.desc}</p>
                 </div>
               ))}
@@ -233,6 +250,7 @@ export default function Home() {
       </div>
       
       <ProductSection />
+      <span className="block h-32"></span>
       <Footer />
     </>
   );

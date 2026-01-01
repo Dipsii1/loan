@@ -129,19 +129,19 @@ export default function CreditForm() {
     {
       value: 'SERTIFIKAT',
       title: "Sertifikat",
-      description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+      description: "Penggunaan sertifikat properti",
       icon: <Image src="/jaminan-1.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
     },
     {
       value: 'BPKB',
       title: "BPKB",
-      description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+      description: "Dokumen kepemilikan kendaraan bermotor",
       icon: <Image src="/jaminan-2.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
     },
     {
       value: 'SK_PEGAWAI',
       title: "SK Pegawai",
-      description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+      description: "Penggunaan SK pengangkatan ASN/TNI/POLRI sebagai agunan",
       icon: <Image src="/jaminan-3.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
     },
   ]
