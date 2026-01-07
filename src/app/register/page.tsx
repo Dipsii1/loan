@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Navbar from "@/components/Navbar"
-import Link from "next/link"
+import Navbar from "@/components/Navbar";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, ChevronDown, Eye, EyeOff, X } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -22,14 +22,16 @@ export default function RegisterPage() {
     email: "",
     no_phone: "",
     password: "",
-    userType: ""
+    userType: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
 
     // For phone number, only allow digits
@@ -40,28 +42,40 @@ export default function RegisterPage() {
 
     setFormData({
       ...formData,
-      [name]: processedValue
+      [name]: processedValue,
     });
     // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
       setErrors({
         ...errors,
-        [name]: ""
+        [name]: "",
       });
     }
   };
 
   const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // Allow: backspace, delete, tab, escape, enter
-    if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'].includes(e.key)) {
+    if (["Backspace", "Delete", "Tab", "Escape", "Enter"].includes(e.key)) {
       return;
     }
     // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-    if ((e.key === 'a' || e.key === 'c' || e.key === 'v' || e.key === 'x') && e.ctrlKey) {
+    if (
+      (e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x") &&
+      e.ctrlKey
+    ) {
       return;
     }
     // Allow: Arrow keys
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+    if (
+      [
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+      ].includes(e.key)
+    ) {
       return;
     }
     // Only allow numbers (0-9)
@@ -75,7 +89,8 @@ export default function RegisterPage() {
 
     if (!formData.name.trim()) newErrors.name = "Nama harus diisi";
     if (!formData.email.trim()) newErrors.email = "Email harus diisi";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email tidak valid";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email tidak valid";
     else {
       const firstChar = formData.email.trim().charAt(0);
       if (!/^[a-z]$/.test(firstChar)) {
@@ -83,11 +98,14 @@ export default function RegisterPage() {
       }
     }
 
-    if (!formData.no_phone.trim()) newErrors.no_phone = "Nomor telepon harus diisi";
-    else if (!/^\d+$/.test(formData.no_phone)) newErrors.no_phone = "Nomor telepon harus angka";
+    if (!formData.no_phone.trim())
+      newErrors.no_phone = "Nomor telepon harus diisi";
+    else if (!/^\d+$/.test(formData.no_phone))
+      newErrors.no_phone = "Nomor telepon harus angka";
 
     if (!formData.password) newErrors.password = "Password harus diisi";
-    else if (formData.password.length < 6) newErrors.password = "Password minimal 6 karakter";
+    else if (formData.password.length < 6)
+      newErrors.password = "Password minimal 6 karakter";
 
     if (!formData.userType) newErrors.userType = "Pilih tipe pengguna";
 
@@ -107,29 +125,31 @@ export default function RegisterPage() {
     const role = formData.userType === "agent" ? "Agent" : "Nasabah";
 
     try {
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-      data: { role },
-      emailRedirectTo: `${window.location.origin}/verify`
-      },
-    });
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { role },
+        },
+      });
 
       if (error) throw error;
       if (!data.user) throw new Error("User supabase tidak terbentuk");
 
-      const res = await fetch("https://be-loan-production.up.railway.app/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: data.user.id,
-          name: formData.name,
-          email: formData.email,
-          no_phone: formData.no_phone,
-          role_id: formData.userType === "agent" ? 2 : 3,
-        }),
-      });
+      const res = await fetch(
+        "https://be-loan-production.up.railway.app/users",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: data.user.id,
+            name: formData.name,
+            email: formData.email,
+            no_phone: formData.no_phone,
+            role_id: formData.userType === "agent" ? 2 : 3,
+          }),
+        },
+      );
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
@@ -143,7 +163,7 @@ export default function RegisterPage() {
         email: "",
         no_phone: "",
         password: "",
-        userType: ""
+        userType: "",
       });
 
       // Jangan langsung redirect ke login, biarkan user membaca popup
@@ -151,7 +171,6 @@ export default function RegisterPage() {
       setTimeout(() => {
         router.push("/login");
       }, 5000);
-
     } catch (err: any) {
       setErrors({
         email: err.message || "Registrasi gagal",
@@ -185,9 +204,13 @@ export default function RegisterPage() {
                     placeholder="Nama"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.name ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.name ? "border-red-500" : "border-gray-300"} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
-                  {errors.name && <p className="text-red-500 text-sm mt-1 ml-1">{errors.name}</p>}
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1 ml-1">
+                      {errors.name}
+                    </p>
+                  )}
                 </div>
 
                 {/* email */}
@@ -198,9 +221,13 @@ export default function RegisterPage() {
                     placeholder="Email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.email ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.email ? "border-red-500" : "border-gray-300"} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
-                  {errors.email && <p className="text-red-500 text-sm mt-1 ml-1">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1 ml-1">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 {/* no phone */}
@@ -213,9 +240,13 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     onKeyDown={handlePhoneKeyDown}
                     inputMode="numeric"
-                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.no_phone ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.no_phone ? "border-red-500" : "border-gray-300"} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
-                  {errors.no_phone && <p className="text-red-500 text-sm mt-1 ml-1">{errors.no_phone}</p>}
+                  {errors.no_phone && (
+                    <p className="text-red-500 text-sm mt-1 ml-1">
+                      {errors.no_phone}
+                    </p>
+                  )}
                 </div>
 
                 {/* PASSWORD */}
@@ -227,13 +258,15 @@ export default function RegisterPage() {
                       placeholder="Password"
                       value={formData.password}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.password ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-4 py-2.5 sm:py-3 rounded-2xl border ${errors.password ? "border-red-500" : "border-gray-300"} shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
                       {showPassword ? (
                         <EyeOff className="h-5 w-5 text-black" />
@@ -242,7 +275,11 @@ export default function RegisterPage() {
                       )}
                     </button>
                   </div>
-                  {errors.password && <p className="text-red-500 text-sm mt-1 ml-1">{errors.password}</p>}
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1 ml-1">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 {/* Choose Agent / Nasabah */}
@@ -253,31 +290,33 @@ export default function RegisterPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { label: 'Agent', value: 'agent' },
-                      { label: 'Nasabah', value: 'nasabah' }
-                    ].map(option => {
-                      const selected = formData.userType === option.value
+                      { label: "Agent", value: "agent" },
+                      { label: "Nasabah", value: "nasabah" },
+                    ].map((option) => {
+                      const selected = formData.userType === option.value;
 
                       return (
                         <button
                           key={option.value}
                           type="button"
                           onClick={() =>
-                            setFormData(prev => ({
+                            setFormData((prev) => ({
                               ...prev,
-                              userType: option.value
+                              userType: option.value,
                             }))
                           }
                           className={`
                             rounded-2xl border-2 px-4 py-4 font-semibold transition-all
-                            ${selected
-                              ? 'border-blue-500 ring-2 ring-blue-500 bg-blue-50'
-                              : 'border-gray-300 hover:border-blue-300'}
+                            ${
+                              selected
+                                ? "border-blue-500 ring-2 ring-blue-500 bg-blue-50"
+                                : "border-gray-300 hover:border-blue-300"
+                            }
                           `}
                         >
                           {option.label}
                         </button>
-                      )
+                      );
                     })}
                   </div>
 
@@ -321,7 +360,10 @@ export default function RegisterPage() {
                 <div className="text-center pt-4 mb-8">
                   <p className="text-gray-600">
                     Sudah punya akun?{" "}
-                    <Link href="/login" className="text-blue-600 hover:text-blue-800 font-semibold">
+                    <Link
+                      href="/login"
+                      className="text-blue-600 hover:text-blue-800 font-semibold"
+                    >
                       Login
                     </Link>
                   </p>
@@ -341,34 +383,49 @@ export default function RegisterPage() {
               >
                 <X className="h-5 w-5 text-gray-500" />
               </button>
-              
+
               <div className="text-center mb-6">
                 <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                  <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <svg
+                    className="h-8 w-8 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
                   </svg>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   Registrasi Berhasil!
                 </h2>
-                <p className="text-gray-600 mb-2">
-                  Cek email kamu untuk konfirmasi berikutnya.
-                </p>
-                <p className="text-sm text-gray-500">
-                  Kami telah mengirimkan email konfirmasi ke <span className="font-semibold">{formData.email}</span>
-                </p>
               </div>
 
               <div className="bg-blue-50 rounded-xl p-4 mb-6">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-blue-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="h-5 w-5 text-blue-600 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-blue-700">
-                      Buka email kamu dan klik link konfirmasi untuk mengaktifkan akun
+                      Buka email kamu dan klik link konfirmasi untuk
+                      mengaktifkan akun
                     </p>
                   </div>
                 </div>
@@ -390,5 +447,5 @@ export default function RegisterPage() {
         )}
       </main>
     </div>
-  )
+  );
 }

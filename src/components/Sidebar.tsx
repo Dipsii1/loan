@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { supabase } from "@/app/lib/supabase";
 import { Button } from "@/components/ui/Button";
+import Logo from "./Logo";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -41,12 +42,7 @@ export default function Sidebar() {
     <aside className="w-72 bg-gradient-to-b from-white to-gray-50 border-r border-gray-200 shadow-xl p-6 hidden md:flex flex-col h-screen sticky top-0">
       {/* Logo/Brand Section */}
       <div className="flex items-center gap-3 mb-8 pb-6 border-b border-gray-200">
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
-          <span className="text-white font-bold text-lg">L</span>
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">Loan</h2>
-        </div>
+        <Logo/>
       </div>
 
       {/* Navigation Items */}
