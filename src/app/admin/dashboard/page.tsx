@@ -22,6 +22,8 @@ import {
 import { Button } from "@/components/ui/Button";
 import { User } from "lucide-react";
 import { Download } from "lucide-react"
+import ExcelJS from "exceljs"
+import { saveAs } from "file-saver"
 
 
 interface ApplicationStatus {
@@ -143,7 +145,7 @@ export default function AdminDashboard() {
     { value: "DITOLAK", label: "Ditolak", color: "bg-red-100 text-red-800" },
   ];
 
-  
+
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -293,12 +295,12 @@ export default function AdminDashboard() {
         setShowStatusModal(false);
         setNewStatus("");
         setSelectedApplication(null);
-        
+
         await Promise.all([
           fetchApplications(token),
           fetchApplicationStatuses(token)
         ]);
-        
+
         setTimeout(() => {
           setShowSuccessToast(false);
         }, 3000);
@@ -326,11 +328,11 @@ export default function AdminDashboard() {
   const filteredApplications = applications.filter(app => {
     if (!app) return false;
 
-    const name = app.nama_lengkap || ""; 
-    const kode = app.kode_pengajuan || ""; 
+    const name = app.nama_lengkap || "";
+    const kode = app.kode_pengajuan || "";
 
     const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         kode.toLowerCase().includes(searchTerm.toLowerCase());
+      kode.toLowerCase().includes(searchTerm.toLowerCase());
 
     if (selectedStatus === "all") return matchesSearch;
 
@@ -364,6 +366,142 @@ export default function AdminDashboard() {
     setShowWarningModal(false);
   };
 
+  const handleDownload = async () => {
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet("Pengajuan Kredit")
+
+    const applyBorder = (cell: ExcelJS.Cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      }
+    }
+
+    /* ================= HEADER ATAS ================= */
+    worksheet.mergeCells("A1:B1")
+    worksheet.mergeCells("C1:E1")
+    worksheet.mergeCells("F1:G1")
+    worksheet.mergeCells("H1:J1")
+
+    worksheet.getCell("A1").value = "DATA NASABAH"
+    worksheet.getCell("C1").value = "DATA KREDIT"
+    worksheet.getCell("F1").value = "STATUS"
+    worksheet.getCell("H1").value = "WAKTU"
+
+    /* ================= HEADER BAWAH ================= */
+    worksheet.getRow(2).values = [
+      "Kode Pengajuan",
+      "Nama Lengkap",
+      "Jenis Kredit",
+      "Plafond",
+      "Jaminan",
+      "Status Terakhir",
+      "Catatan",
+      "Tanggal Pengajuan",
+      "Tanggal Diproses",
+      "Tanggal Hasil",
+    ]
+
+      ;[1, 2].forEach((row) => {
+        worksheet.getRow(row).eachCell((cell) => {
+          cell.font = { bold: true, color: { argb: "FFFFFFFF" } }
+          cell.alignment = { horizontal: "center", vertical: "middle" }
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF2563EB" },
+          }
+          applyBorder(cell)
+        })
+      })
+
+    /* ================= DATA ================= */
+    applications.forEach((app) => {
+      const statuses = applicationStatuses.filter(
+        (s) => s.application_id === app.id
+      )
+
+      const latestStatus =
+        statuses
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )[0] ?? null
+
+      const row = worksheet.addRow([
+        app.kode_pengajuan,
+        app.nama_lengkap,
+        app.jenis_kredit,
+        Number(app.plafond),
+        app.jaminan ?? "-",
+        latestStatus?.status ?? "-",
+        latestStatus?.catatan ?? "-",
+        statuses.find((s) => s.status === "DIAJUKAN")?.created_at
+          ? new Date(
+            statuses.find((s) => s.status === "DIAJUKAN")!.created_at
+          ).toLocaleString("id-ID")
+          : "-",
+        statuses.find((s) => s.status === "DIPROSES")?.created_at
+          ? new Date(
+            statuses.find((s) => s.status === "DIPROSES")!.created_at
+          ).toLocaleString("id-ID")
+          : "-",
+        statuses.find((s) =>
+          ["DITERIMA", "DITOLAK"].includes(s.status)
+        )?.created_at
+          ? new Date(
+            statuses.find((s) =>
+              ["DITERIMA", "DITOLAK"].includes(s.status)
+            )!.created_at
+          ).toLocaleString("id-ID")
+          : "-",
+      ])
+
+      row.eachCell((cell) => {
+        cell.alignment = { horizontal: "center", vertical: "middle" }
+        applyBorder(cell)
+      })
+
+      // Warna merah jika ditolak
+      if (latestStatus?.status === "DITOLAK") {
+        row.eachCell((cell) => {
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFECACA" },
+          }
+          cell.font = { color: { argb: "FF991B1B" } }
+        })
+      }
+
+      // Format Rupiah
+      row.getCell(4).numFmt = '"Rp" #,##0'
+    })
+
+    /* ================= AUTO WIDTH ================= */
+    worksheet.columns.forEach((col, i) => {
+      let maxLength = 12
+      worksheet.eachRow((row) => {
+        const val = row.getCell(i + 1).value
+        if (val) maxLength = Math.max(maxLength, String(val).length)
+      })
+      col.width = maxLength + 2
+    })
+
+    worksheet.views = [{ state: "frozen", ySplit: 2 }]
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    saveAs(
+      new Blob([buffer]),
+      "Pengajuan_Peminjaman_Satufin.xlsx"
+    )
+  }
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -377,81 +515,81 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
+
       {showSuccessToast && (
-        <SuccessToast 
-          message={toastMessage} 
-          onClose={handleSuccessToastClose} 
+        <SuccessToast
+          message={toastMessage}
+          onClose={handleSuccessToastClose}
         />
       )}
-      
+
       {showErrorToast && (
-        <ErrorToast 
-          message={toastMessage} 
-          onClose={handleErrorToastClose} 
+        <ErrorToast
+          message={toastMessage}
+          onClose={handleErrorToastClose}
         />
       )}
-      
+
       {showWarningModal && (
-        <WarningModal 
-          message={toastMessage} 
-          onClose={handleWarningModalClose} 
+        <WarningModal
+          message={toastMessage}
+          onClose={handleWarningModalClose}
         />
       )}
-      
-     <nav className="bg-white border-b border-gray-200 shadow-sm">
-  <div className="px-6 py-4">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold">L</span>
+
+      <nav className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold">L</span>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Loan</h1>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+                onClick={() => router.push("/admin/dashboard")}
+              >
+                <FileText className="h-5 w-5" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+                onClick={() => router.push("/admin/user")}
+              >
+                <User className="h-5 w-5" />
+                <span className="hidden sm:inline">Users</span>
+              </Button>
+
+
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
+                onClick={() => router.push("/home")}
+              >
+                <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">Home</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Log out</span>
+              </Button>
+            </div>
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold text-gray-900">Loan</h1>
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-4">
-  <Button
-    variant="ghost"
-    className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-    onClick={() => router.push("/admin/dashboard")}
-  >
-    <FileText className="h-5 w-5" />
-    <span className="hidden sm:inline">Dashboard</span>
-  </Button>
-
-  <Button
-    variant="ghost"
-    className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-    onClick={() => router.push("/admin/user")}
-  >
-    <User className="h-5 w-5" />
-    <span className="hidden sm:inline">Users</span>
-  </Button>
-
-
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
-          onClick={() => router.push("/home")}
-        >
-          <Home className="h-4 w-4" />
-          <span className="hidden sm:inline">Home</span>
-        </Button>
-
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Log out</span>
-        </Button>
-      </div>
-    </div>
-  </div>
-</nav>
+      </nav>
 
       <div className="p-15">
         <div className="max-w-7xl mx-auto">
@@ -558,10 +696,10 @@ export default function AdminDashboard() {
                 </div>
 
                 <Button
-                 
+                  onClick={handleDownload}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                      <Download size={16} />
+                  <Download size={16} />
                   Download
                 </Button>
               </div>
@@ -822,11 +960,10 @@ export default function AdminDashboard() {
                     <button
                       key={option.value}
                       onClick={() => setNewStatus(option.value)}
-                      className={`p-3 rounded-lg border text-center transition-all ${
-                        newStatus === option.value
-                          ? `${option.color.split(' ')[0]} border-current`
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
+                      className={`p-3 rounded-lg border text-center transition-all ${newStatus === option.value
+                        ? `${option.color.split(' ')[0]} border-current`
+                        : 'border-gray-300 hover:border-gray-400'
+                        }`}
                     >
                       <p className={`font-medium ${newStatus === option.value ? option.color.split(' ')[1] : 'text-gray-700'}`}>
                         {option.label}
