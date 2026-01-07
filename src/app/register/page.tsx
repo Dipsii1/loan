@@ -130,6 +130,7 @@ export default function RegisterPage() {
         password: formData.password,
         options: {
           data: { role },
+          emailRedirectTo: `${window.location.origin}/verify`,
         },
       });
 
@@ -374,7 +375,7 @@ export default function RegisterPage() {
         </section>
 
         {/* Success Popup Modal */}
-        {showSuccessPopup && (
+        {/* {showSuccessPopup && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="relative bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
               <button
@@ -403,6 +404,13 @@ export default function RegisterPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   Registrasi Berhasil!
                 </h2>
+                <p className="text-gray-600 mb-2">
+                  Cek email kamu untuk konfirmasi berikutnya.
+                </p>
+                <p className="text-sm text-gray-500">
+                  Kami telah mengirimkan email konfirmasi ke{" "}
+                  <span className="font-semibold">{formData.email}</span>
+                </p>
               </div>
 
               <div className="bg-blue-50 rounded-xl p-4 mb-6">
@@ -444,7 +452,7 @@ export default function RegisterPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </main>
     </div>
   );

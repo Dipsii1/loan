@@ -322,7 +322,7 @@ export default function CreditForm() {
         throw new Error(result.message || 'Gagal mengirim data');
       }
 
-      setModalMessage('Pengajuan kredit berhasil disubmit!');
+      setModalMessage('Terimakasih, anda akan di hubungi oleh Admin');
       setShowSuccessModal(true);
       
     } catch (error: any) {

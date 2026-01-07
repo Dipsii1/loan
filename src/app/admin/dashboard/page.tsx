@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/lib/supabase";
+import { formatRupiah } from "@/app/lib/utils";
 import {
   LogOut,
   Home,
@@ -14,13 +15,13 @@ import {
   Clock,
   AlertCircle,
   FileText,
-  RefreshCw,
   X,
   Check,
   AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { User } from "lucide-react";
+import { Download } from "lucide-react"
 
 
 interface ApplicationStatus {
@@ -142,6 +143,7 @@ export default function AdminDashboard() {
     { value: "DITOLAK", label: "Ditolak", color: "bg-red-100 text-red-800" },
   ];
 
+  
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -556,11 +558,11 @@ export default function AdminDashboard() {
                 </div>
 
                 <Button
-                  onClick={handleRefresh}
+                 
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Refresh
+                      <Download size={16} />
+                  Download
                 </Button>
               </div>
             </div>
@@ -629,7 +631,7 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="font-medium text-gray-900">
-                              {app.plafond ? `Rp ${app.plafond.toLocaleString('id-ID')}` : "-"}
+                              {formatRupiah(app.plafond)}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -709,7 +711,7 @@ export default function AdminDashboard() {
                   <div>
                     <p className="text-sm text-gray-500">Plafond</p>
                     <p className="font-medium">
-                      {selectedApplication.plafond ? `Rp ${selectedApplication.plafond.toLocaleString('id-ID')}` : "-"}
+                      {formatRupiah(selectedApplication.plafond)}
                     </p>
                   </div>
                   <div>
