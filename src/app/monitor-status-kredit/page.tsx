@@ -6,6 +6,10 @@ import { supabase } from "../lib/supabase"
 import { useRouter } from "next/navigation"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { Download } from "lucide-react"
+import ExcelJS from "exceljs"
+import { saveAs } from "file-saver"
+
+
 
 // Helper format tanggal + jam
 const formatDateTime = (isoString?: string) => {
@@ -38,9 +42,8 @@ const TimelineItem = ({
 }) => (
   <div className="flex flex-col items-center text-center w-24">
     <div
-      className={`w-4 h-4 rounded-full mb-2 ${
-        danger ? "bg-red-500" : active ? "bg-blue-500" : "bg-gray-300"
-      }`}
+      className={`w-4 h-4 rounded-full mb-2 ${danger ? "bg-red-500" : active ? "bg-blue-500" : "bg-gray-300"
+        }`}
     />
     <div className="text-xs font-semibold">{title}</div>
     <div className="text-[10px] text-gray-500 mt-1">{time || "-"}</div>
@@ -137,6 +140,128 @@ export default function MonitorStatusKredit() {
     setOpenMap((prev) => ({ ...prev, [kode]: !prev[kode] }))
   }
 
+  const handleDownload = async (item: CreditApplication) => {
+    const workbook = new ExcelJS.Workbook()
+    const worksheet = workbook.addWorksheet("Pengajuan Kredit")
+
+    const applyBorder = (cell: ExcelJS.Cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      }
+    }
+
+    // HEADER ATAS
+    worksheet.mergeCells("A1:B1")
+    worksheet.mergeCells("C1:E1")
+    worksheet.mergeCells("F1:G1")
+    worksheet.mergeCells("H1:J1")
+
+    worksheet.getCell("A1").value = "DATA NASABAH"
+    worksheet.getCell("C1").value = "DATA KREDIT"
+    worksheet.getCell("F1").value = "STATUS"
+    worksheet.getCell("H1").value = "WAKTU"
+
+    // HEADER BAWAH
+    worksheet.getRow(2).values = [
+      "Kode Pengajuan",
+      "Nama Lengkap",
+      "Jenis Kredit",
+      "Plafond",
+      "Jaminan",
+      "Status Terakhir",
+      "Catatan",
+      "Tanggal Pengajuan",
+      "Tanggal Diproses",
+      "Tanggal Hasil",
+    ]
+
+      ;[1, 2].forEach((row) => {
+        worksheet.getRow(row).eachCell((cell) => {
+          cell.font = { bold: true, color: { argb: "FFFFFFFF" } }
+          cell.alignment = { horizontal: "center", vertical: "middle" }
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF2563EB" },
+          }
+          applyBorder(cell)
+        })
+      })
+
+    const latestStatus =
+      item.statuses
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        )[0] ?? null
+
+    const row = worksheet.addRow([
+      item.kode_pengajuan,
+      item.nama_lengkap,
+      item.jenis_kredit,
+      Number(item.plafond),
+      item.jaminan ?? "-",
+      latestStatus?.status ?? "-",
+      latestStatus?.catatan ?? "-",
+      formatDateTime(
+        item.statuses.find((s) => s.status === "DIAJUKAN")?.created_at
+      ),
+      formatDateTime(
+        item.statuses.find((s) => s.status === "DIPROSES")?.created_at
+      ),
+      formatDateTime(
+        item.statuses.find(
+          (s) => s.status === "DITERIMA" || s.status === "DITOLAK"
+        )?.created_at
+      ),
+    ])
+
+    row.eachCell((cell) => {
+      cell.alignment = { horizontal: "center", vertical: "middle" }
+      applyBorder(cell)
+    })
+
+    if (latestStatus?.status === "DITOLAK") {
+      row.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFECACA" },
+        }
+        cell.font = { color: { argb: "FF991B1B" } }
+      })
+    }
+
+    row.getCell(4).numFmt = '"Rp" #,##0'
+
+    worksheet.columns.forEach((col) => {
+      let max = 12
+      col.eachCell({ includeEmpty: true }, (cell) => {
+        max = Math.max(max, cell.value?.toString().length ?? 0)
+      })
+      col.width = max + 2
+    })
+
+    worksheet.views = [{ state: "frozen", ySplit: 2 }]
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    saveAs(
+      new Blob([buffer]),
+      "Pengajuan Peminjaman Satufin.xlsx"
+    )
+  }
+
+
+
+
+
+
+
   return (
     <div className="min-h-screen bg-white flex">
       <Sidebar />
@@ -206,12 +331,13 @@ export default function MonitorStatusKredit() {
                   {/* BUTTON DOWNLOAD EXCEL */}
                   <div className="mt-4 text-right">
                     <button
-                      // onClick={handleDownload} // nanti isi logic-nya
+                      onClick={() => handleDownload(it)}
                       className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow cursor-pointer hover:bg-blue-700 transition"
                     >
                       <Download size={16} />
                       Download
                     </button>
+
                   </div>
 
                   {/* BUTTON SHOW MORE */}
@@ -233,9 +359,8 @@ export default function MonitorStatusKredit() {
                   </div>
 
                   <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      open ? "max-h-96 mt-4" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-96 mt-4" : "max-h-0"
+                      }`}
                   >
                     {/* Timeline */}
                     <h3 className="text-center items-center mb-6 font-semibold">Detail Status</h3>
