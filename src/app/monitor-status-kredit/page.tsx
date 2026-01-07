@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { useRouter } from "next/navigation"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { Download } from "lucide-react"
 
 // Helper format tanggal + jam
 const formatDateTime = (isoString?: string) => {
@@ -19,6 +20,9 @@ const formatDateTime = (isoString?: string) => {
     hour12: false,
   })
 }
+
+// FORMAT TIMELINE
+
 
 // Timeline components
 const TimelineItem = ({
@@ -199,6 +203,17 @@ export default function MonitorStatusKredit() {
                     )}
                   </div>
 
+                  {/* BUTTON DOWNLOAD EXCEL */}
+                  <div className="mt-4 text-right">
+                    <button
+                      // onClick={handleDownload} // nanti isi logic-nya
+                      className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow cursor-pointer hover:bg-blue-700 transition"
+                    >
+                      <Download size={16} />
+                      Download
+                    </button>
+                  </div>
+
                   {/* BUTTON SHOW MORE */}
                   <div className="mt-4 text-center">
                     <button
@@ -223,13 +238,14 @@ export default function MonitorStatusKredit() {
                     }`}
                   >
                     {/* Timeline */}
+                    <h3 className="text-center items-center mb-6 font-semibold">Detail Status</h3>
                     <div className="flex items-start justify-between px-2 mt-12">
                       <TimelineItem title="Pengajuan" time={waktuPengajuan} active />
                       <TimelineLine active={!!waktuProses} />
-                      <TimelineItem title="Proses" time={waktuProses} active={!!waktuProses} />
+                      <TimelineItem title="" time={waktuProses} active={!!waktuProses} />
                       <TimelineLine active={!!waktuHasil} />
                       <TimelineItem
-                        title={latestStatus?.status === "DITOLAK" ? "Ditolak" : "Diterima"}
+                        title={latestStatus?.status === "DITOLAK" ? "Ditolak" : ""}
                         time={waktuHasil}
                         active={!!waktuHasil}
                         danger={latestStatus?.status === "DITOLAK"}
