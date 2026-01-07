@@ -25,6 +25,10 @@ export default function Profile() {
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saveSuccess, setSaveSuccess] = useState(false)
+  
+  // State untuk form nasabah
+  const [agentReferralCode, setAgentReferralCode] = useState("")
+  
   const router = useRouter()
 
   useEffect(() => {
@@ -345,7 +349,34 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Error Message */}
+              {/* Row 4: Form untuk Nasabah (Hanya role_id = 3) */}
+              {user.role_id === 3 && (
+                <div className="border-t border-gray-200 pt-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center text-gray-500">
+                      <Key className="w-4 h-4 mr-2" />
+                      <span className="font-medium">Kode Agent</span>
+                    </div>
+                    
+                    <div className="pl-6">
+                      <div className="space-y-3">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Masukkan Kode Agent (Opsional)
+                        </label>
+                        <input
+                          type="text"
+                          value={agentReferralCode}
+                          onChange={(e) => setAgentReferralCode(e.target.value.toUpperCase())}
+                          placeholder="Contoh: AG-MJKYP2"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message untuk edit nama */}
               {saveError && (
                 <div className="border-t border-gray-200 pt-8">
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -357,7 +388,7 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Row 4: Dibuat Pada dan Terakhir Update */}
+              {/* Row 5: Dibuat Pada dan Terakhir Update */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-gray-200 pt-8">
                 {/* Dibuat Pada */}
                 <div className="space-y-3">
