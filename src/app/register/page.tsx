@@ -112,6 +112,7 @@ export default function RegisterPage() {
       password: formData.password,
       options: {
         data: { role },
+        emailRedirectTo: `${window.location.origin}/verify`
       },
     });
 
