@@ -64,7 +64,7 @@ export default function Sidebar() {
             `}
           >
             <Home className={`h-5 w-5 ${isActive("/home") ? "text-blue-600" : "text-gray-500"}`} />
-            <span className="text-sm font-medium">Dashboard</span>
+            <span className="text-sm font-medium">Kembali ke Home</span>
           </Link>
 
           {/* MONITOR LOAN STATUS */}

@@ -4,22 +4,22 @@ import Image from "next/image"
 const services = [
   {
     title: "Kredit Produktif",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    description: "Pembiayaan untuk mendukung pertumbuhan usaha",
     icon: <Image src="services-1.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
   },
   {
     title: "Kredit Multiguna",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    description: "Solusi dana fleksibel untuk berbagai kebutuhan",
     icon: <Image src="services-2.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
   },
   {
     title: "KPR",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    description: "Pembiayaan kepemilikan hunian yang membantu Anda memiliki rumah",
     icon: <Image src="services-3.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
   },
   {
     title: "Dana Pensiun",
-    description: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    description: "Perencanaan dana untuk masa depan tenang",
     icon: <Image src="services-4.svg" alt="illustration" width={100} height={100} className="w-12 h-12 text-blue-500 mx-auto" />,
   },
 
@@ -63,10 +63,10 @@ export default function ServicesSection() {
         ))}
       </div>
 
-      <h2 className="text-3xl font-medium text-center text-black mb-12 mt-32">
+      {/* <h2 className="text-3xl font-medium text-center text-black mb-12 mt-32">
         Sedia Jaminan
-      </h2>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 px-6">
+      </h2> */}
+      {/* <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 px-6">
         {jaminan.map((jaminans, index) => (
           <div
             key={index}
@@ -77,7 +77,7 @@ export default function ServicesSection() {
             <p className="text-gray-600 mt-2">{jaminans.description}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </section>
   )
 }

@@ -3,8 +3,8 @@
 import Navbar from "@/components/Navbar"
 import Link from "next/link"
 import { Button } from "@/components/ui/Button";
-import { ArrowRight, ChevronDown, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, ChevronDown, Eye, EyeOff, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
 
@@ -26,6 +26,7 @@ export default function RegisterPage() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -105,17 +106,14 @@ export default function RegisterPage() {
     // Admin TIDAK dibuat lewat register
     const role = formData.userType === "agent" ? "Agent" : "Nasabah";
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: { role },
-          emailRedirectTo: `${window.location.origin}/verify`
-        },
-      });
-
-
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: { role },
+      },
+    });
 
       if (error) throw error;
       if (!data.user) throw new Error("User supabase tidak terbentuk");
@@ -135,7 +133,7 @@ export default function RegisterPage() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
 
-      router.push("/login");
+    router.push("/login");
 
     } catch (err: any) {
       setErrors({
@@ -144,9 +142,11 @@ export default function RegisterPage() {
     }
   };
 
-
-
-
+  // Tutup popup secara manual
+  const handleClosePopup = () => {
+    setShowSuccessPopup(false);
+    router.push("/login");
+  };
 
   return (
     <div>
@@ -252,11 +252,11 @@ export default function RegisterPage() {
                             }))
                           }
                           className={`
-            rounded-2xl border-2 px-4 py-4 font-semibold transition-all
-            ${selected
+                            rounded-2xl border-2 px-4 py-4 font-semibold transition-all
+                            ${selected
                               ? 'border-blue-500 ring-2 ring-blue-500 bg-blue-50'
                               : 'border-gray-300 hover:border-blue-300'}
-          `}
+                          `}
                         >
                           {option.label}
                         </button>
@@ -270,7 +270,6 @@ export default function RegisterPage() {
                     </p>
                   )}
                 </div>
-
 
                 {/* Button */}
                 <Button
@@ -314,6 +313,64 @@ export default function RegisterPage() {
             </div>
           </div>
         </section>
+
+        {/* Success Popup Modal */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="relative bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+              <button
+                onClick={handleClosePopup}
+                className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+              
+              <div className="text-center mb-6">
+                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                  <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  Registrasi Berhasil!
+                </h2>
+                <p className="text-gray-600 mb-2">
+                  Cek email kamu untuk konfirmasi berikutnya.
+                </p>
+                <p className="text-sm text-gray-500">
+                  Kami telah mengirimkan email konfirmasi ke <span className="font-semibold">{formData.email}</span>
+                </p>
+              </div>
+
+              <div className="bg-blue-50 rounded-xl p-4 mb-6">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-blue-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-blue-700">
+                      Buka email kamu dan klik link konfirmasi untuk mengaktifkan akun
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Button
+                  onClick={handleClosePopup}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors cursor-pointer"
+                >
+                  Lanjut ke Login
+                </Button>
+                <p className="text-center text-sm text-gray-500">
+                  Akan diarahkan ke login dalam 5 detik
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   )
