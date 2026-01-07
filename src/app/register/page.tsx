@@ -171,7 +171,7 @@ export default function RegisterPage() {
       // Auto-redirect setelah 5 detik
       setTimeout(() => {
         router.push("/login");
-      }, 5000);
+      }, 1000);
     } catch (err: any) {
       setErrors({
         email: err.message || "Registrasi gagal",
