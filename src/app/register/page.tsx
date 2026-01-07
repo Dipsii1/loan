@@ -94,52 +94,55 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const validationErrors = validateForm();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-  // Admin TIDAK dibuat lewat register
-  const role = formData.userType === "agent" ? "Agent" : "Nasabah";
+    // Admin TIDAK dibuat lewat register
+    const role = formData.userType === "agent" ? "Agent" : "Nasabah";
 
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: { role },
-      },
-    });
-
-    if (error) throw error;
-    if (!data.user) throw new Error("User supabase tidak terbentuk");
-
-    const res = await fetch("https://be-loan.vercel.app/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: data.user.id,
-        name: formData.name,
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
-        no_phone: formData.no_phone,
-        role_id: formData.userType === "agent" ? 2 : 3,
-      }),
-    });
+        password: formData.password,
+        options: {
+          data: { role },
+          emailRedirectTo: `${window.location.origin}/verify`
+        },
+      });
 
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.message);
 
-    router.push("/login");
 
-  } catch (err: any) {
-    setErrors({
-      email: err.message || "Registrasi gagal",
-    });
-  }
-};
+      if (error) throw error;
+      if (!data.user) throw new Error("User supabase tidak terbentuk");
+
+      const res = await fetch("https://be-loan-production.up.railway.app/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.user.id,
+          name: formData.name,
+          email: formData.email,
+          no_phone: formData.no_phone,
+          role_id: formData.userType === "agent" ? 2 : 3,
+        }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+
+      router.push("/login");
+
+    } catch (err: any) {
+      setErrors({
+        email: err.message || "Registrasi gagal",
+      });
+    }
+  };
 
 
 
