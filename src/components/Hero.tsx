@@ -20,15 +20,13 @@ export default function Hero() {
         transition={{ duration: 0.5 }}
       >
         {/* Heading */}
-      <h1 className="text-balance text-3xl font-medium sm:text-4xl md:text-6xl font-extrabold leading-tight">
-        Bantuan Keuangan <br />
-        Dengan Tujuan yang Tepat
+      <h1 className="text-balance text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
+        Satu Pintu untuk <br />
+        semua kebutuhan finansial
       </h1>
 
       {/* Subheading */}
-      <p className="text-black mt-4 text-base sm:text-l max-w-2xl">
-        transparan, bertanggung jawab, dan tepat sasaran.
-      </p>
+      
       </motion.div>
       
       <motion.div

@@ -14,8 +14,9 @@ import { supabase } from "@/app/lib/supabase";
 
 const menuItems = [
   { name: "Kenapa Loan", href: "" },
-  { name: "Produk", href: "/resources" },
-  { name: "Blog", href: "/blog" },
+  { name: "About", href: "#About", scroll: true },
+  { name: "Produk", href: "#product-section", scroll: true },
+  { name: "Blog", href: "", blog: true },
 
   // { name: "Feedback", href: "/feedback" },
 ];
@@ -23,6 +24,7 @@ const menuItems = [
 export const NavbarHome = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [showUnderMaintenance, setShowUnderMaintenance] = React.useState(false);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -32,6 +34,22 @@ export const NavbarHome = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleMenuItemClick = (item: any, e: React.MouseEvent) => {
+    if (item.scroll) {
+      e.preventDefault();
+      const id = item.href.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+      setMenuState(false);
+    } else if (item.blog) {
+      e.preventDefault();
+      setShowUnderMaintenance(true);
+      setMenuState(false);
+    }
+  };
   
 
   return (
@@ -71,12 +89,21 @@ export const NavbarHome = () => {
               <ul className="flex gap-8 text-sm text-gray-500">
                 {menuItems.map((item, index) => (
                   <li key={index}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150 hover:text-black"
-                    >
-                      <span>{item.name}</span>
-                    </Link>
+                    {item.scroll || item.blog ? (
+                      <button
+                        onClick={(e) => handleMenuItemClick(item, e)}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150 hover:text-black cursor-pointer"
+                      >
+                        <span>{item.name}</span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150 hover:text-black"
+                      >
+                        <span>{item.name}</span>
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -87,12 +114,21 @@ export const NavbarHome = () => {
                 <ul className="space-y-6 text-base">
                   {menuItems.map((item, index) => (
                     <li key={index}>
-                      <Link
-                        href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                      >
-                        <span>{item.name}</span>
-                      </Link>
+                      {item.scroll || item.blog ? (
+                        <button
+                          onClick={(e) => handleMenuItemClick(item, e)}
+                          className="text-muted-foreground hover:text-accent-foreground block duration-150 cursor-pointer"
+                        >
+                          <span>{item.name}</span>
+                        </button>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                        >
+                          <span>{item.name}</span>
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -129,6 +165,22 @@ export const NavbarHome = () => {
           </div>
         </div>
       </nav>
+
+      {/* Under Maintenance Modal */}
+      {showUnderMaintenance && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+            <h2 className="text-2xl font-bold mb-4">Under Maintenance</h2>
+            <p className="text-gray-600 mb-6">Blog page sedang dalam pengembangan. Silahkan kembali lagi nanti!</p>
+            <button
+              onClick={() => setShowUnderMaintenance(false)}
+              className="bg-[#0C0A3E] text-white px-6 py-2 rounded-full font-medium hover:bg-[#0C0A3E]/90 transition-all"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

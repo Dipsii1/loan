@@ -36,11 +36,7 @@ const techLogos = [
    {
     node: <img src="/kb-bank.png" alt="KB Bank" className="h-10" />,
     title: "KB Bank",
-  },
-  {
-    node: <img src="/bss-sampoerna.png" alt="BSS Sampoerna" className="h-14" />,
-    title: "BSS Sampoerna",
-  },
+  },  
   {
     node: <img src="/bpr.png" alt="BPR" className="h-18" />,
     title: "BPR",

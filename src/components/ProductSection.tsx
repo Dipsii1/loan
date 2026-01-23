@@ -46,8 +46,8 @@ const jaminan = [
 
 export default function ServicesSection() {
   return (
-    <section className="py-8">
-      <h2 className="text-3xl font-medium text-center text-black mb-12">
+    <section className="py-8" id="product-section">
+      <h2 className="text-3xl font-bold text-center mb-12 text-black">
         Produk Kami
       </h2>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 px-6">
