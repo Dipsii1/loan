@@ -9,7 +9,6 @@ import Logo from "./Logo";
 import { motion } from "framer-motion";
 
 const menuItems = [
-  { name: "Kenapa Loan", href: "" },
   { name: "About", href: "#About", scroll: true },
   { name: "Produk", href: "#product-section", scroll: true },
   { name: "Blog", href: "", blog: true },

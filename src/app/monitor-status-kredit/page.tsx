@@ -275,6 +275,8 @@ export default function MonitorStatusKredit() {
       <main className="flex-1 p-8">
         <h1 className="text-2xl font-bold mb-6">Monitor Status Kredit</h1>
 
+        
+
         {loading && <p className="text-gray-500">Memuat data...</p>}
 
         {error && <p className="text-red-500 font-medium">{error}</p>}
@@ -335,7 +337,7 @@ export default function MonitorStatusKredit() {
                   </div>
 
                   {/* BUTTON DOWNLOAD EXCEL */}
-                  <div className="mt-4 text-right">
+                  {/* <div className="mt-4 text-right">
                     <button
                       onClick={() => handleDownload(it)}
                       className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow cursor-pointer hover:bg-blue-700 transition"
@@ -343,8 +345,7 @@ export default function MonitorStatusKredit() {
                       <Download size={16} />
                       Download
                     </button>
-
-                  </div>
+                  </div> */}
 
                   {/* BUTTON SHOW MORE */}
                   <div className="mt-4 text-center">
