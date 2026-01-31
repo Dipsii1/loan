@@ -43,7 +43,7 @@ export default function Footer() {
   
         {/* Copyright */}
         <div className="text-center text-xs text-gray-400 mt-12">
-          Copyright © 2025 Loan Market Indonesia. All Rights Reserved
+          Copyright © 2025 SatuFin Indonesia. All Rights Reserved
         </div>
       </footer>
     )

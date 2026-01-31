@@ -9,7 +9,7 @@ import Logo from "./Logo";
 import { motion } from "framer-motion";
 
 const menuItems = [
-  { name: "About", href: "#About", scroll: true },
+  { name: "Tentang Kami", href: "#About", scroll: true },
   { name: "Produk", href: "#product-section", scroll: true },
   { name: "Blog", href: "", blog: true },
 
@@ -50,7 +50,7 @@ export const Navbar = () => {
     <header>
       <nav
         data-state={menuState && "active"}
-        className="fixed group z-50 w-full px-2"
+        className="fixed group z-50 w-full px-2 "
       >
         <div
           className={cn(
