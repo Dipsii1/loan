@@ -74,10 +74,10 @@ export default function Hero() {
       <div className="mt-12 max-w-5xl w-full">
         <div className="bg-white rounded-2xl shadow-md grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
           {[
-            { icon: "coin", title: "Up to 100 Mio", desc: "Jumlah Insetif yang Dibayarkan" },
-            { icon: "chart", title: "10 +", desc: "Jumlah Customer yang Terbantu" },
-            { icon: "dollar", title: "Up to 10 Bio", desc: "Jumlah Pinjaman yang Tersalurkan" },
-            { icon: "loading", title: "8 +", desc: "Mitra Lembaga Partner" },
+            { icon: "coin", title: "Up to 100 Mio" },
+            { icon: "chart", title: "10 +", },
+            { icon: "dollar", title: "Up to 10 Bio", },
+            { icon: "loading", title: "8 +", },
           ].map((item, i) => (
             <div key={i} className="p-8 flex flex-col items-center text-center">
               <Image
@@ -88,7 +88,6 @@ export default function Hero() {
                 className="w-12 h-12 mb-4"
               />
               <h2 className="font-bold text-[#0081FF]">{item.title}</h2>
-              <p className="text-sm text-gray-600">{item.desc}</p>
             </div>
           ))}
         </div>
