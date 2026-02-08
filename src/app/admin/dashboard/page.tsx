@@ -145,7 +145,7 @@ export default function AdminDashboard() {
   ];
 
 
-  const API_BASE = "https://mediumspringgreen-wallaby-250953.hostingersite.com/api/v1";
+  const API_BASE = "https://darkgray-buffalo-460138.hostingersite.com/api/v1";
 
   useEffect(() => {
     const checkSession = async () => {

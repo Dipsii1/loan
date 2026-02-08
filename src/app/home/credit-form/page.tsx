@@ -294,7 +294,7 @@ export default function CreditForm() {
       }
 
       const response = await fetch(
-        'https://mediumspringgreen-wallaby-250953.hostingersite.com/api/v1/credit-applications',
+        'https://darkgray-buffalo-460138.hostingersite.com/api/v1/credit-applications',
         {
           method: 'POST',
           headers: {

@@ -52,7 +52,7 @@ export default function Profile() {
         }
 
         const res = await fetch(
-          "https://mediumspringgreen-wallaby-250953.hostingersite.com/api/v1/auth/me",
+          "https://darkgray-buffalo-460138.hostingersite.com/api/v1/auth/me",
           {
             method: "GET",
             headers: {
@@ -136,7 +136,7 @@ export default function Profile() {
       if (!token) throw new Error("Session tidak ditemukan")
 
       const res = await fetch(
-        `https://mediumspringgreen-wallaby-250953.hostingersite.com/api/v1/users/${user.id}`,
+        `https://darkgray-buffalo-460138.hostingersite.com/api/v1/users/${user.id}`,
         {
           method: "PUT",
           headers: {
@@ -191,7 +191,7 @@ export default function Profile() {
       if (!token) throw new Error("Session tidak ditemukan")
 
       const res = await fetch(
-        `https://mediumspringgreen-wallaby-250953.hostingersite.com/api/v1/users/${user.id}`,
+        `https://darkgray-buffalo-460138.hostingersite.com/api/v1/users/${user.id}`,
         {
           method: "PUT",
           headers: {
