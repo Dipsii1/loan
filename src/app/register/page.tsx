@@ -125,7 +125,7 @@ export default function RegisterPage() {
 
     try {
       const res = await fetch(
-        "https://darkgray-buffalo-460138.hostingersite.com/api/v1/auth/register",
+        "https://satufin.satufin.id/api/v1/auth/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -49,7 +49,7 @@ export default function Home() {
         }
 
         const res = await fetch(
-          "https://darkgray-buffalo-460138.hostingersite.com/api/v1/auth/me",
+          "https://satufin.satufin.id/api/v1/auth/me",
           {
             method: "GET",
             headers: {

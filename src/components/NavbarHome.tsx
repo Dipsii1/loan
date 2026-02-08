@@ -122,7 +122,7 @@ export const NavbarHome = () => {
                   onClick={async () => {
                     try {
                       const response = await fetch(
-                        "https://darkgray-buffalo-460138.hostingersite.com/api/v1/auth/logout",
+                        "https://satufin.satufin.id/api/v1/auth/logout",
                         {
                           method: "POST",
                           credentials: "include", // in case you use cookies

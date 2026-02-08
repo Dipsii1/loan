@@ -294,7 +294,7 @@ export default function CreditForm() {
       }
 
       const response = await fetch(
-        'https://darkgray-buffalo-460138.hostingersite.com/api/v1/credit-applications',
+        'https://satufin.satufin.id/api/v1/credit-applications',
         {
           method: 'POST',
           headers: {

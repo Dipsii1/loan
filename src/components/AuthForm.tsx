@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const API_BASE = "https://darkgray-buffalo-460138.hostingersite.com/api/v1"
+const API_BASE = "https://satufin.satufin.id/api/v1"
 
 export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const router = useRouter()
