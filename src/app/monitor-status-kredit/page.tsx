@@ -274,7 +274,7 @@ export default function MonitorStatusKredit() {
           <div className="space-y-4">
             {items.length === 0 && <p className="text-gray-500">Belum ada pengajuan kredit.</p>}
 
-            {items.map((it) => {
+            {items.map((it, index) => {
               const latestStatus =
                 it.statuses?.slice().sort(
                   (a, b) =>
@@ -286,19 +286,19 @@ export default function MonitorStatusKredit() {
 
               // Ambil waktu setiap step dari statuses dan format tanggal+jam
               const waktuPengajuan = formatDateTime(
-                it.statuses.find((s) => s.status === "DIAJUKAN")?.created_at
+                it.statuses?.find((s) => s.status === "DIAJUKAN")?.created_at
               )
               const waktuProses = formatDateTime(
-                it.statuses.find((s) => s.status === "DIPROSES")?.created_at
+                it.statuses?.find((s) => s.status === "DIPROSES")?.created_at
               )
               const waktuHasil = formatDateTime(
-                it.statuses.find(
+                it.statuses?.find(
                   (s) => s.status === "DITERIMA" || s.status === "DITOLAK"
                 )?.created_at
               )
 
               return (
-                <div key={it.kode_pengajuan} className="border rounded-xl p-4 shadow-sm bg-white">
+                <div key={`${it.kode_pengajuan}-${index}`} className="border rounded-xl p-4 shadow-sm bg-white">
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-sm text-gray-500">Kode Pengajuan</div>
