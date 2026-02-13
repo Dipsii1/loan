@@ -20,10 +20,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { User } from "lucide-react";
-import { Download } from "lucide-react"
-import ExcelJS from "exceljs"
-import { saveAs } from "file-saver"
-
+import { Download } from "lucide-react";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 interface ApplicationStatus {
   id: number;
@@ -36,16 +35,27 @@ interface ApplicationStatus {
     kode_pengajuan: string;
     nama_lengkap: string;
   };
-  profile?: {
+  users?: {
     name: string;
     email: string;
   };
 }
 
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  no_phone?: string;
+  role_id?: number;
+}
+
 interface CreditApplication {
   id: number;
+  user_id: number;
   kode_pengajuan: string;
   nama_lengkap: string;
+  no_phone?: string;
+  email?: string;
   jenis_kredit: string;
   plafond: number;
   jaminan: string;
@@ -98,7 +108,7 @@ const ErrorToast = ({ message, onClose }: { message: string; onClose: () => void
 
 const WarningModal = ({ message, onClose }: { message: string; onClose: () => void }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-6">
@@ -123,6 +133,7 @@ export default function AdminDashboard() {
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [applications, setApplications] = useState<CreditApplication[]>([]);
   const [applicationStatuses, setApplicationStatuses] = useState<ApplicationStatus[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -143,7 +154,6 @@ export default function AdminDashboard() {
     { value: "DITERIMA", label: "Diterima", color: "bg-green-100 text-green-800" },
     { value: "DITOLAK", label: "Ditolak", color: "bg-red-100 text-red-800" },
   ];
-
 
   const API_BASE = "https://satufin.satufin.id/api/v1";
 
@@ -190,6 +200,7 @@ export default function AdminDashboard() {
         }
 
         await Promise.all([
+          fetchUsers(token),
           fetchApplications(token),
           fetchApplicationStatuses(token)
         ]);
@@ -207,6 +218,24 @@ export default function AdminDashboard() {
 
     checkSession();
   }, [router]);
+
+  const fetchUsers = async (token: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/users`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        setUsers(json.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const fetchApplications = async (token: string) => {
     try {
@@ -227,6 +256,11 @@ export default function AdminDashboard() {
     } finally {
       setLoadingApplications(false);
     }
+  };
+
+  // Get user data by user_id
+  const getUserData = (userId: number) => {
+    return users.find(u => u.id === userId);
   };
 
   const fetchApplicationStatuses = async (token: string) => {
@@ -346,6 +380,7 @@ export default function AdminDashboard() {
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
       if (token) {
         await Promise.all([
+          fetchUsers(token),
           fetchApplications(token),
           fetchApplicationStatuses(token)
         ]);
@@ -368,8 +403,8 @@ export default function AdminDashboard() {
   };
 
   const handleDownload = async () => {
-    const workbook = new ExcelJS.Workbook()
-    const worksheet = workbook.addWorksheet("Pengajuan Kredit")
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Pengajuan Kredit");
 
     const applyBorder = (cell: ExcelJS.Cell) => {
       cell.border = {
@@ -377,24 +412,26 @@ export default function AdminDashboard() {
         left: { style: "thin" },
         bottom: { style: "thin" },
         right: { style: "thin" },
-      }
-    }
+      };
+    };
 
     /* ================= HEADER ATAS ================= */
-    worksheet.mergeCells("A1:B1")
-    worksheet.mergeCells("C1:E1")
-    worksheet.mergeCells("F1:G1")
-    worksheet.mergeCells("H1:J1")
+    worksheet.mergeCells("A1:D1");
+    worksheet.mergeCells("E1:G1");
+    worksheet.mergeCells("H1:I1");
+    worksheet.mergeCells("J1:L1");
 
-    worksheet.getCell("A1").value = "DATA NASABAH"
-    worksheet.getCell("C1").value = "DATA KREDIT"
-    worksheet.getCell("F1").value = "STATUS"
-    worksheet.getCell("H1").value = "WAKTU"
+    worksheet.getCell("A1").value = "DATA NASABAH";
+    worksheet.getCell("E1").value = "DATA KREDIT";
+    worksheet.getCell("H1").value = "STATUS";
+    worksheet.getCell("J1").value = "WAKTU";
 
     /* ================= HEADER BAWAH ================= */
     worksheet.getRow(2).values = [
       "Kode Pengajuan",
       "Nama Lengkap",
+      "Email",
+      "No. Telepon",
       "Jenis Kredit",
       "Plafond",
       "Jaminan",
@@ -403,26 +440,26 @@ export default function AdminDashboard() {
       "Tanggal Pengajuan",
       "Tanggal Diproses",
       "Tanggal Hasil",
-    ]
+    ];
 
-      ;[1, 2].forEach((row) => {
-        worksheet.getRow(row).eachCell((cell) => {
-          cell.font = { bold: true, color: { argb: "FFFFFFFF" } }
-          cell.alignment = { horizontal: "center", vertical: "middle" }
-          cell.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "FF2563EB" },
-          }
-          applyBorder(cell)
-        })
-      })
+    [1, 2].forEach((row) => {
+      worksheet.getRow(row).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF2563EB" },
+        };
+        applyBorder(cell);
+      });
+    });
 
     /* ================= DATA ================= */
     applications.forEach((app) => {
       const statuses = applicationStatuses.filter(
         (s) => s.application_id === app.id
-      )
+      );
 
       const latestStatus =
         statuses
@@ -431,11 +468,15 @@ export default function AdminDashboard() {
             (a, b) =>
               new Date(b.created_at).getTime() -
               new Date(a.created_at).getTime()
-          )[0] ?? null
+          )[0] ?? null;
+
+      const userData = getUserData(app.user_id);
 
       const row = worksheet.addRow([
         app.kode_pengajuan,
         app.nama_lengkap,
+        userData?.email ?? "-",
+        userData?.no_phone ?? "-",
         app.jenis_kredit,
         Number(app.plafond),
         app.jaminan ?? "-",
@@ -460,12 +501,12 @@ export default function AdminDashboard() {
             )!.created_at
           ).toLocaleString("id-ID")
           : "-",
-      ])
+      ]);
 
       row.eachCell((cell) => {
-        cell.alignment = { horizontal: "center", vertical: "middle" }
-        applyBorder(cell)
-      })
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        applyBorder(cell);
+      });
 
       // Warna merah jika ditolak
       if (latestStatus?.status === "DITOLAK") {
@@ -474,34 +515,33 @@ export default function AdminDashboard() {
             type: "pattern",
             pattern: "solid",
             fgColor: { argb: "FFFECACA" },
-          }
-          cell.font = { color: { argb: "FF991B1B" } }
-        })
+          };
+          cell.font = { color: { argb: "FF991B1B" } };
+        });
       }
 
-      // Format Rupiah
-      row.getCell(4).numFmt = '"Rp" #,##0'
-    })
+      // Format Rupiah (column 6 is Plafond now)
+      row.getCell(6).numFmt = '"Rp" #,##0';
+    });
 
     /* ================= AUTO WIDTH ================= */
     worksheet.columns.forEach((col, i) => {
-      let maxLength = 12
+      let maxLength = 12;
       worksheet.eachRow((row) => {
-        const val = row.getCell(i + 1).value
-        if (val) maxLength = Math.max(maxLength, String(val).length)
-      })
-      col.width = maxLength + 2
-    })
+        const val = row.getCell(i + 1).value;
+        if (val) maxLength = Math.max(maxLength, String(val).length);
+      });
+      col.width = maxLength + 2;
+    });
 
-    worksheet.views = [{ state: "frozen", ySplit: 2 }]
+    worksheet.views = [{ state: "frozen", ySplit: 2 }];
 
-    const buffer = await workbook.xlsx.writeBuffer()
+    const buffer = await workbook.xlsx.writeBuffer();
     saveAs(
       new Blob([buffer]),
       "Pengajuan_Peminjaman_Satufin.xlsx"
-    )
-  }
-
+    );
+  };
 
   if (loading) {
     return (
@@ -516,7 +556,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {showSuccessToast && (
         <SuccessToast
           message={toastMessage}
@@ -569,7 +608,6 @@ export default function AdminDashboard() {
                 <span className="hidden sm:inline">Users</span>
               </Button>
 
-
               <Button
                 variant="ghost"
                 className="flex items-center gap-2 text-gray-700 hover:text-blue-600"
@@ -592,7 +630,7 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div className="p-15">
+      <div className="p-6">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -700,7 +738,7 @@ export default function AdminDashboard() {
                   onClick={handleDownload}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  <Download size={16} />
+                  <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
               </div>
@@ -827,10 +865,16 @@ export default function AdminDashboard() {
 
       {showDetailModal && selectedApplication && (
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white shadow-2xl border-2 border-grey-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white shadow-2xl border-2 border-gray-200 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Detail Pengajuan</h3>
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
 
               <div className="space-y-6">
@@ -842,6 +886,14 @@ export default function AdminDashboard() {
                   <div>
                     <p className="text-sm text-gray-500">Nama Lengkap</p>
                     <p className="font-medium">{selectedApplication.nama_lengkap || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">No. Telepon</p>
+                    <p className="font-medium">{getUserData(selectedApplication.user_id)?.no_phone || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="font-medium">{getUserData(selectedApplication.user_id)?.email || "-"}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Jenis Kredit</p>
@@ -932,7 +984,7 @@ export default function AdminDashboard() {
 
       {showStatusModal && selectedApplication && (
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white shadow-2xl border-2 border-grey-800 rounded-xl max-w-md w-full">
+          <div className="bg-white shadow-2xl border-2 border-gray-200 rounded-xl max-w-md w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Ubah Status Pengajuan</h3>
