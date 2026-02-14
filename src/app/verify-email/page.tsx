@@ -9,7 +9,7 @@ interface VerifyResponse {
   message: string;
 }
 
-export default function VerifyEmailPage(): JSX.Element {
+export default function VerifyEmailPage(){
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
